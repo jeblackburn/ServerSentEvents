@@ -1,0 +1,38 @@
+<html>
+<head>
+    <script>
+
+        console.log("HELLO!");
+
+        var eventSource = new EventSource("http://localhost:8080/channel");
+
+        eventSource.onopen = function (evt) {
+            console.log("Opened", evt.data);
+        };
+
+        eventSource.addEventListener("authenticate", function (evt) {
+
+            var uuid = JSON.parse(evt.data).uuid;
+
+            console.log(uuid);
+
+            var xmlHttpRequest = new XMLHttpRequest();
+
+            xmlHttpRequest.open("POST", "/authenticate?token=good&uuid=" + uuid);
+
+            xmlHttpRequest.send();
+        });
+
+        eventSource.addEventListener("message", function (evt) {
+
+            document.getElementById("display").innerText = evt.data;
+        });
+
+    </script>
+</head>
+<body>
+
+<div id="display"></div>
+
+</body>
+</html>
