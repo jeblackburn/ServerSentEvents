@@ -2,6 +2,7 @@ package com.example.sse;
 
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Component;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
@@ -26,13 +27,21 @@ public class FluxChannel implements Channel {
 
         return Flux.create((FluxSink<ServerSentEvent<String>> fluxSink) -> {
 
+            System.out.println("Callback from Flux");
             sinks.add(new FluxHolder(fluxSink, uuid));
 
             // force the issue more quickly if the client disconnects
-            Flux.interval(Duration.ofSeconds(2)).doOnNext(a -> fluxSink.next(ServerSentEvent.<String>builder().event("ping").build()));
+//            Disposable pingConsumer = Flux.interval(Duration.ofSeconds(2)).doOnNext(a -> {
+//                System.out.println("Sending a Ping.");
+//                fluxSink.next(ServerSentEvent.<String>builder().event("ping " + a).build());
+//            }).subscribe();
 
-            fluxSink.onCancel(() -> sinks.removeIf(fluxHolder -> fluxHolder.uuid.equals(uuid)) );
-            fluxSink.onDispose(() -> sinks.removeIf(fluxHolder -> fluxHolder.uuid.equals(uuid)) );
+            fluxSink.onCancel(() -> {
+                System.out.println("On Cancel!!!");
+                sinks.removeIf(fluxHolder -> fluxHolder.uuid.equals(uuid));
+                fluxSink.complete();
+//                pingConsumer.dispose();
+            } );
 
             fluxSink.next(ServerSentEvent.<String>builder().event("authenticate").data("{\"uuid\": \"" + uuid + "\"}").build());
         });

@@ -29,7 +29,7 @@ public class SSEController {
 
     @PostMapping("/send")
     public void sendStringDownTube(@RequestParam String string) {
-
+        System.out.println("string = " + string);
         channel.sendString(string);
     }
 
