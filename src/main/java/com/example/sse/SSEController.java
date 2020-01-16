@@ -23,19 +23,16 @@ public class SSEController {
 
     @GetMapping(value = "/channel")
     public ResponseEntity<Flux<ServerSentEvent<String>>> channel() {
-
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_EVENT_STREAM_VALUE).body(channel.giveTube());
     }
 
     @PostMapping("/send")
     public void sendStringDownTube(@RequestParam String string) {
-        System.out.println("string = " + string);
         channel.sendString(string);
     }
 
-    @PostMapping("/authenticate")
-    public void authenticate(@RequestParam String token, @RequestParam UUID uuid) {
-
-        if (token.equals("good")) channel.authenticate(uuid);
-    }
+//    @PostMapping("/authenticate")
+//    public void authenticate(@RequestParam String token, @RequestParam UUID uuid) {
+//        if (token.equals("good")) channel.authenticate(uuid);
+//    }
 }

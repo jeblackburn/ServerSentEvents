@@ -56,11 +56,11 @@ public class FluxChannel implements Channel {
     @Override
     public void authenticate(UUID uuid) {
 
-        System.out.println(sinks.size());
-
-        System.out.println(uuid);
-
-        sinks.stream().filter(it -> it.uuid.equals(uuid)).forEach(FluxHolder::authenticate);
+//        System.out.println(sinks.size());
+//
+//        System.out.println(uuid);
+//
+//        sinks.stream().filter(it -> it.uuid.equals(uuid)).forEach(FluxHolder::authenticate);
     }
 }
 
@@ -77,11 +77,10 @@ class FluxHolder {
         this.uuid = uuid;
     }
 
-    public void authenticate() {
-
-        System.out.println("Authed");
-        this.authenticated = true;
-    }
+//    public void authenticate() {
+//        System.out.println("Authed");
+//        this.authenticated = true;
+//    }
 
     public void send(String string) {
 
@@ -89,6 +88,8 @@ class FluxHolder {
 
         System.out.println(authenticated);
 
-        if (authenticated) sink.next(ServerSentEvent.<String>builder().event("message").data(string).build());
+//        if (authenticated){
+            sink.next(ServerSentEvent.<String>builder().event("message").data(string).build());
+//        }
     }
 }
